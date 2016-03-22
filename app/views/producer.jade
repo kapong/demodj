@@ -1,0 +1,140 @@
+doctype html
+html
+    head
+        title DJ Page (Demo)
+        meta(charset='UTF-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        link(rel='stylesheet',href='/css/bootstrap.min.css')
+        link(rel='stylesheet',href='/css/bootstrap-theme.min.css')
+        link(rel='stylesheet',href='/css/producer.css')
+        script(src='/js/jquery.min.js')
+        script(src='/js/jquery.formatDateTime.js')
+        script(src='/js/bootstrap.min.js')
+        script(src='/js/jquery-ui.min.js')
+        script(type="text/javascript").
+            $(document).ready(function() {
+                window.conn;
+
+                if (window["WebSocket"]) {
+                    window.conn = new WebSocket("#{ws}");
+                    window.conn.onclose = function(evt) {
+                        alert('Disconnect!');
+                    };
+                    window.conn.onmessage = function(evt) {
+                        //ignore
+                    };
+                } else {
+                    alert('Not support!');
+                }
+
+                $('.btnignore').click(function() {
+                    $(this).parents('.news').remove();
+                    $('#chat-txt').focus();
+                });
+
+                $('.btnadd').click(function() {
+                    var pr = $(this).parents('.news');
+                    addChat(pr.children('.news-detail').html());
+                    pr.remove();
+                });
+
+                $('.btedit').click(function() {
+                    var pr = $(this).parents('.news');
+                    $('#chat-txt').val(pr.children('.news-detail').html());
+                    pr.remove();
+                    $('#chat-txt').focus();
+                });
+
+                $('#chat-txt').keydown(function(e) {
+                    if (e.keyCode == 13 && event.shiftKey) {
+                        addChat($(this).val().replace(/\n/g, "<br>"));
+                        $(this).val('');
+                        return false; // prevent the button click from happening
+                    }
+                });
+
+                $('.btnchat').click(function() {
+                    addChat($('#chat-txt').val().replace(/\n/g, "<br>"));
+                    $('#chat-txt').val('');
+                });
+                setChatboxEvent();
+            })
+            function addChat(txt) {
+                var addtime = $.formatDateTime("MM-d'@'hh:ii:ss", new Date);
+                var content = '<div class="chat-item row">';
+                content += '<div class="chat-item-text col-md-10">' + txt + '</div>';
+                content += '<div class="chat-item-time col-md-2">' + addtime + '</div>';
+                content += '<div class="chat-item-action col-md-2"><button type="button" class="btn btn-success btnread"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>\n\
+                <button type="button" class="btn btn-danger btnremove"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></div>';
+                content += '</div>';
+                $('#chat-box').append(content);
+                sendChatbox();
+                setChatboxEvent();
+            }
+
+            function readChat(txt) {
+                var readtime = $.formatDateTime("MM-d'@'hh:ii:ss", new Date);
+                $('#chat-read .chat-read-text').html(txt);
+                $('#chat-read .chat-item-time').html(readtime);
+                $('#chat-txt').focus();
+            }
+
+            function sendChatbox() {
+                window.conn.send($('#chat-box').html());
+
+            }
+
+            function setChatbox(txt) {
+                $('#chat-box').html(txt);
+                setChatboxEvent();
+            }
+
+            function setChatboxEvent() {
+                $("#chat-box").sortable({
+                    items: ".chat-item",
+                    stop:  function(){
+                        sendChatbox();
+                    }
+                });
+                $("#chat-box").disableSelection();
+
+                $('.btnread').unbind('click');
+                $('.btnread').click(function() {
+                    var pr = $(this).parents('.chat-item');
+                    readChat(pr.children('.chat-item-text').html());
+                    pr.remove();
+                    sendChatbox();
+                });
+
+                $('.btnremove').click(function() {
+                    $(this).parents('.chat-item').remove();
+                    $('#chat-txt').focus();
+                    sendChatbox();
+                });
+                $('#chat-txt').focus();
+            }
+    body
+        #main-container.container-fluid
+            #chat-side.col-xs-12.col-md-9
+                #chat-box.row
+                    #chat-read.row.ui-state-disabled
+                        .chat-read-text.col-md-10
+                        .chat-item-time.col-md-12
+                #chat-input.row
+                    form.form-horizontal
+                        .form-group
+                            label.col-sm-2.control-label(for='inputEmail3') Text
+                            .col-sm-10
+                                textarea#chat-txt.form-control
+                        .form-group
+                            .col-sm-offset-2.col-sm-10
+                                button.btn.btn-success.btnchat(type='button') Send
+            #news-side.col-xs-6.col-md-3
+                each val, idx in items
+                    .news.row
+                        .news-title= val.title
+                        .news-detail= val.detail
+                        .news-action
+                            button.btn.btn-default.btedit(type='button') Edit
+                            button.btn.btn-success.btnadd(type='button') Send
+                            button.btn.btn-danger.btnignore(type='button') Ignore

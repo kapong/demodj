@@ -1,0 +1,28 @@
+$bgcolor: #AEAEAE;
+$newsitem-color: #FFFFFF;
+$newsitem-bgcolor: #333333;
+
+html,body
+	height: 100%;
+body
+	background-color: $bgcolor;
+
+$a: 100%;
+$b: 100px;
+#news_list
+	height: -webkit-calc(#{$a} - #{$b});
+	height:    -moz-calc(#{$a} - #{$b});
+	height:         calc(#{$a} - #{$b});
+	overflow-y: hidden;
+	position: relative;
+	margin-top: 15px;
+
+.news-items
+	background-color: $newsitem-bgcolor;
+	color: $newsitem-color;
+	padding: 5px;
+
+.news-items:first-child
+	height: 100%;
+
+#chat_box

@@ -1,0 +1,42 @@
+doctype html
+html
+	head
+		title= title
+		script(src='/js/jquery-2.2.2.min.js',type='text/javascript')
+		link(href='/css/bootstrap.min.css', rel='stylesheet')
+		link(href='/css/dj.css', rel='stylesheet')
+		script(type='text/javascript').
+			$(document).ready(function(){
+				$('#readchat').click(function(){
+					$('#chat_box').removeClass('chatalert');
+					$('#chat_box h1').html('');
+				})
+			});
+		//script(type='text/javascript').
+			if (window["WebSocket"]) {
+				window.conn = new WebSocket("ws://localhost:8080");
+				window.conn.onclose = function(evt) {
+					alert('Disconnect!');
+				};
+				window.conn.onmessage = function(evt) {
+					alert(evt.data);
+				};
+			} else {
+				alert('Not support!');
+			}
+	body
+		#news_list.container-fluid
+			each val, id in news_items
+				.col-xs-6.news-items
+					h3= val.header
+					p= val.detail
+					a.btn.btn-primary(href='#', aria-label='read',role="button")
+						span.glyphicon.glyphicon-ok(aria-hidden='true')
+						span  Read #{id}
+		#chat_box.container-fluid.chatalert
+			.col-xs-10 
+				h1 ข้อความแจ้งเตือนบางอย่างงงงงงงงงงงงงงงงงง
+			.col-xs-2
+				a#readchat.btn.btn-primary(href='#', aria-label='read chat',role="button")
+							span.glyphicon.glyphicon-thumbs-up(aria-hidden='true')
+

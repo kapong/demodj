@@ -1,0 +1,1 @@
+html,body{height:100%}body{background-color:#AEAEAE}#news_list{height:-webkit-calc(100% - 100px);height:-moz-calc(100% - 100px);height:calc(100% - 100px);overflow-y:hidden;position:relative;margin-top:15px}.news-items{background-color:#333;color:#fff;padding:5px}.news-items:first-child{height:100%}

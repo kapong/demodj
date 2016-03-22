@@ -1,0 +1,43 @@
+$bgcolor: #AEAEAE;
+$newsitem-color: #FFFFFF;
+$newsitem-bgcolor: #333333;
+$chatbox-color: #FFFFFF;
+$chatbox-bgcolor: #000000;
+$chatbox-alert-bgcolor: #FF0000;
+
+$viewheight: 100%;
+$chatheight: 100px;
+
+html,body
+	height: 100%;
+	overflow-y: hidden;
+body
+	background-color: $bgcolor;
+
+
+#news_list
+	height: -webkit-calc(#{$viewheight} - #{$chatheight} - 15px);
+	height:    -moz-calc(#{$viewheight} - #{$chatheight} - 15px);
+	height:         calc(#{$viewheight} - #{$chatheight} - 15px);
+	overflow-y: hidden;
+	position: relative;
+	margin-top: 15px;
+
+.news-items
+	background-color: $newsitem-bgcolor;
+	color: $newsitem-color;
+	padding: 5px;
+
+.news-items:first-child
+	height: 100%;
+
+#chat_box
+	height: $chatheight;
+	background-color: $chatbox-bgcolor;
+	color: $chatbox-color;
+
+#chat_box.chatalert
+	background-color: $chatbox-alert-bgcolor;
+
+#readchat
+	margin-top: 20px;
